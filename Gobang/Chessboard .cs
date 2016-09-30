@@ -9,12 +9,13 @@ namespace Gobang
     public class Chessboard
     {
         public int[,] board;
-        static int number = 15;
+        static int number = 15; //棋盘格数
         int forbidden;
         int[,] dirs;
         int[,] checkDirs;
         List<int[]> won;
 
+        //清空棋盘
         public void Init(int forbidden = 0)
         {
             board = new int[number, number];
@@ -42,16 +43,17 @@ namespace Gobang
             }
         }
 
-        int[] GetItem(int row)
-        {
-            int[] item = new int[number];
-            for (int i = 0; i < item.Length; i++)
-            {
-                item[i] = board[row, i];
-            }
-            return item;
-        }
+        //int[] GetItem(int row)
+        //{
+        //    int[] item = new int[number];
+        //    for (int i = 0; i < item.Length; i++)
+        //    {
+        //        item[i] = board[row, i];
+        //    }
+        //    return item;
+        //}
 
+        //棋盘 => 字符串
         string Str()
         {
             string text = "  A B C D E F G H I J K L M N O\n";
@@ -78,16 +80,17 @@ namespace Gobang
             return board[row, col];
         }
 
-        bool Put(int row, int col, int value)
-        {
-            if (row >= 0 && row < number && col >= 0 && col < number)
-            {
-                board[row, col] = value;
-                return true;
-            }
-            return false;
-        }
+        //bool Put(int row, int col, int value)
+        //{
+        //    if (row >= 0 && row < number && col >= 0 && col < number)
+        //    {
+        //        board[row, col] = value;
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
+        //判断输赢，返回0（无输赢），1（黑棋赢），2（白棋赢）
         public int Check()
         {
             for (int row = 0; row < number; row++)

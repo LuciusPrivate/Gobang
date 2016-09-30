@@ -10,28 +10,30 @@ namespace Gobang
     {
         static int number = 15;
         public int[,] POS;
-        int STWO = 1;
-        int STHREE = 2;
-        int SFOUR = 3;
-        int TWO = 4;
-        int THREE = 5;
-        int FOUR = 6;
-        int FIVE = 7;
-        int DFOUR = 8;
-        int FOURT = 9;
-        int DTHREE = 10;
-        int NOTYPE = 11;
-        int ANALYZED = 255;
-        int TODO = 0;
 
-        int BLACK = 1;
-        int WHITE = 2;
+        //模式
+        int STWO = 1; //冲二
+        int STHREE = 2; //冲三
+        int SFOUR = 3; //冲四
+        int TWO = 4; //活二
+        int THREE = 5; //活三
+        int FOUR = 6; //活四
+        int FIVE = 7; //活五
+        //int DFOUR = 8; //双四
+        //int FOURT = 9; //四三
+        //int DTHREE = 10; //双三
+        //int NOTYPE = 11;
+        int ANALYZED = 255; //已经分析过
+        int TODO = 0; //没有分析过
 
-        int[,] count;
+        int BLACK = 1; //黑棋
+        int WHITE = 2; //白棋
 
-        int[] result;
-        int[] line;
-        int[,,] record;
+        int[,] count; //每种棋局的个数：count[黑棋 / 白棋][模式]
+
+        int[] result; //保存当前直线分析值
+        int[] line; //当前直线数据
+        int[,,] record; //全盘分析结果 [row][col][方向]
 
         public void Init()
         {
@@ -62,6 +64,7 @@ namespace Gobang
             return a > b ? a : b;
         }
 
+        //复位数据
         void Reset()
         {
 
@@ -129,28 +132,30 @@ namespace Gobang
             return score;
         }
 
+        //四个方向（水平，垂直，左斜，右斜）分析评估棋盘，然后根据分析结果打分
         int _Evaluate(int[,] board, int turn)
         {
             Reset();
+            //四个方向分析
             for (int row = 0; row < number; row++)
             {
                 for (int col = 0; col < number; col++)
                 {
                     if (board[row, col] != 0)
                     {
-                        if (record[row, col, 0] == TODO)
+                        if (record[row, col, 0] == TODO) //水平
                         {
                             Analysis_horizon(board, row, col);
                         }
-                        if (record[row, col, 1] == TODO)
+                        if (record[row, col, 1] == TODO) //垂直
                         {
                             Analysis_vertical(board, row, col);
                         }
-                        if (record[row, col, 2] == TODO)
+                        if (record[row, col, 2] == TODO) //左斜
                         {
                             Analysis_leftInclined(board, row, col);
                         }
-                        if (record[row, col, 3] == TODO)
+                        if (record[row, col, 3] == TODO) //右斜
                         {
                             Analysis_rightInclined(board, row, col);
                         }
@@ -158,6 +163,7 @@ namespace Gobang
                 }
             }
 
+            //分别对白棋黑棋计算：FIVE, FOUR, THREE, TWO等出现的次数
             int[] check = new int[] { FIVE, FOUR, SFOUR, THREE, STHREE, TWO, STWO };
 
             for (int row = 0; row < number; row++)
@@ -180,6 +186,7 @@ namespace Gobang
                 }
             }
 
+            //如果有五连则马上返回分
             if (turn == WHITE)
             {
                 if (count[BLACK, FIVE] != 0)
@@ -203,6 +210,7 @@ namespace Gobang
                 }
             }
 
+            //如果存在两个冲四，则相当于有一个活四
             if (count[WHITE, SFOUR] >= 2)
             {
                 count[WHITE, FOUR] += 1;
@@ -213,15 +221,7 @@ namespace Gobang
                 count[BLACK, FOUR] += 1;
             }
 
-            //int turn_value = 0, other_value = 0, win = 0;
-
-            //int other = WHITE;
-
-            //if (turn == WHITE)
-            //{
-            //    other = BLACK;
-            //}
-
+            //具体打分
             int bvalue = 0, wvalue = 0;
 
             if (turn == WHITE)
@@ -368,6 +368,7 @@ namespace Gobang
                 }
             }
 
+            //加上位置权值，棋盘最中心点权值是7，往外一格-1，最外圈是0
             int wc = 0, bc = 0;
             for (int row = 0; row < number; row++)
             {
@@ -400,6 +401,7 @@ namespace Gobang
             return bvalue - wvalue;
         }
 
+        //分析水平
         int Analysis_horizon(int[,] board, int row, int col)
         {
             ResetLineResult();
@@ -422,6 +424,7 @@ namespace Gobang
             return record[row, col, 0];
         }
 
+        //分析垂直
         int Analysis_vertical(int[,] board, int row, int col)
         {
             ResetLineResult();
@@ -444,6 +447,7 @@ namespace Gobang
             return record[row, col, 1];
         }
 
+        //分析左斜
         int Analysis_leftInclined(int[,] board, int row, int col)
         {
             ResetLineResult();
@@ -484,6 +488,7 @@ namespace Gobang
             return record[row, col, 2];
         }
 
+        //分析右斜
         int Analysis_rightInclined(int[,] board, int row, int col)
         {
             ResetLineResult();
@@ -524,16 +529,14 @@ namespace Gobang
             return record[row, col, 3];
         }
 
-        int Test(int[,] board)
-        {
-            return 0;
-        }
+        //int Test(int[,] board)
+        //{
+        //    return 0;
+        //}
 
+        //分析一条线：五四三二等棋型
         int Analysis_line(int[] line, int[] result, int num, int position)
         {
-            //while len(line) < 30: line.append(0xf)
-            //while len(record) < 30: record.append(TODO)
-
             for (int i = num; i < number * 2; i++)
             {
                 line[i] = number;
@@ -561,7 +564,7 @@ namespace Gobang
             int xl = position;
             int xr = position;
 
-            while (xl > 0)
+            while (xl > 0) //探索左边界
             {
                 if (line[xl - 1] != value)
                 {
@@ -569,7 +572,7 @@ namespace Gobang
                 }
                 xl -= 1;
             }
-            while (xr < num)
+            while (xr < num) //探索右边界
             {
                 if (line[xr + 1] != value)
                 {
@@ -581,7 +584,7 @@ namespace Gobang
             int left_range = xl;
             int right_range = xr;
 
-            while (left_range > 0)
+            while (left_range > 0) // 探索左边范围（非对方棋子的格子坐标）
             {
                 if (line[left_range - 1] == inverse)
                 {
@@ -589,7 +592,7 @@ namespace Gobang
                 }
                 left_range -= 1;
             }
-            while (right_range < num)
+            while (right_range < num) //探索右边范围（非对方棋子的格子坐标
             {
                 if (line[right_range + 1] == inverse)
                 {
@@ -598,6 +601,7 @@ namespace Gobang
                 right_range += 1;
             }
 
+            //如果该直线范围小于 5，则直接返回
             if (right_range - left_range < 4)
             {
                 for (int i = left_range; i < right_range + 1; i++)
@@ -607,23 +611,26 @@ namespace Gobang
                 return 0;
             }
 
+            //设置已经分析过
             for (int i = xl; i < xr + 1; i++)
             {
                 result[i] = ANALYZED;
             }
 
             int range = xr - xl;
+            //如果是 5连
             if (range >= 4)
             {
                 result[position] = FIVE;
                 return FIVE;
             }
+            //如果是 4连
             else if (range == 3)
             {
-                bool leftFour = false;
+                bool leftFour = false; //是否左边是空格
                 if (xl > 0)
                 {
-                    if (line[xl - 1] == 0)
+                    if (line[xl - 1] == 0) //活四
                     {
                         leftFour = true;
                     }
@@ -634,18 +641,18 @@ namespace Gobang
                     {
                         if (leftFour)
                         {
-                            result[position] = FOUR;
+                            result[position] = FOUR; //活四
                         }
                         else
                         {
-                            result[position] = SFOUR;
+                            result[position] = SFOUR; //冲四
                         }
                     }
                     else
                     {
                         if (leftFour)
                         {
-                            result[position] = SFOUR;
+                            result[position] = SFOUR; //冲四
                         }
                     }
                 }
@@ -653,18 +660,19 @@ namespace Gobang
                 {
                     if (leftFour)
                     {
-                        result[position] = SFOUR;
+                        result[position] = SFOUR; //冲四
                     }
                 }
 
                 return result[position];
             }
+            //如果是 3连
             else if (range == 2)
             {
-                bool leftThree = false;
+                bool leftThree = false; //是否左边是空格
                 if (xl > 0)
                 {
-                    if (line[xl - 1] == 0)
+                    if (line[xl - 1] == 0) //左边有空
                     {
                         if (xl > 1 && line[xl - 2] == value)
                         {
@@ -683,11 +691,11 @@ namespace Gobang
                 }
                 if (xr < num)
                 {
-                    if (line[xr + 1] == 0)
+                    if (line[xr + 1] == 0) //右边有气
                     {
                         if (xr < num - 1 && line[xr + 2] == value)
                         {
-                            result[xr] = SFOUR;
+                            result[xr] = SFOUR; //XXX-X 相当于冲四
                             result[xr - 2] = ANALYZED;
                         }
                         else if (leftThree)
@@ -722,12 +730,13 @@ namespace Gobang
 
                 return result[position];
             }
+            //如果是 2连
             else if (range == 1)
             {
                 bool leftTwo = false;
                 if (xl > 2)
                 {
-                    if (line[xl - 1] == 0)
+                    if (line[xl - 1] == 0) //左边用空
                     {
                         if (line[xl - 2] == value)
                         {
@@ -755,7 +764,7 @@ namespace Gobang
                 }
                 if (xr < num)
                 {
-                    if (line[xr + 1] == 0)
+                    if (line[xr + 1] == 0) //右边有空
                     {
                         if (xr < num - 2 && line[xr + 2] == value)
                         {
@@ -778,10 +787,6 @@ namespace Gobang
                                 }
                             }
                         }
-                        //else if (leftThree)
-                        //{
-                        //    result[xr] = THREE;
-                        //}
                         else
                         {
                             if (result[xl] == SFOUR)
@@ -803,10 +808,6 @@ namespace Gobang
                             }
                         }
                     }
-                    //else if (result[xl] == SFOUR)
-                    //{
-                    //    return result[xl];
-                    //}
                     else
                     {
                         if (result[xl] == SFOUR)
@@ -819,17 +820,6 @@ namespace Gobang
                         }
                     }
                 }
-                //else
-                //{
-                //    if (result[xl] == SFOUR)
-                //    {
-                //        return result[xl];
-                //    }
-                //    if (leftThree)
-                //    {
-                //        result[position] = STHREE;
-                //    }
-                //}
 
                 return result[position];
             }

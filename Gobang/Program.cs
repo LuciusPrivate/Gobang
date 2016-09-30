@@ -14,15 +14,12 @@ namespace Gobang
             b.Init();
             var s = new Searcher();
             s.Init();
-            //s.board = b.board;
 
-            int A_int = Convert.ToInt32('A');
-            int number = 15;
-            //int turn = 2;
+            int A_int = Convert.ToInt32('A');// 'A' => int
+            int number = 15; //棋盘格数
             var history = new List<int>();
-            //bool undo = false;
 
-            int depth = 2;
+            int depth = 2; //搜索深度
 
             while (true)
             {
@@ -57,10 +54,10 @@ namespace Gobang
 
                 history.Add(1);
 
-                b.board[row, col] = 1;
+                b.board[row, col] = 1; //人走棋
                 b.Show();
 
-                if (b.Check() == 1)
+                if (b.Check() == 1) //检查是否赢
                 {
                     Console.WriteLine(string.Format("You win!"));
                     return;
@@ -71,10 +68,9 @@ namespace Gobang
                 Move move = s.Search(2, b.board, depth);
 
                 Console.WriteLine(string.Format("Robot moves to {0}{1}({2})", (char)(move.row + A_int), (char)(move.col + A_int), move.score));
-                b.board[move.row, move.col] = 2;
-                //b.Show();
+                b.board[move.row, move.col] = 2; //电脑走棋
 
-                if (b.Check() == 2)
+                if (b.Check() == 2) //检查是否赢
                 {
                     Console.WriteLine(string.Format("You lose!"));
                     return;
