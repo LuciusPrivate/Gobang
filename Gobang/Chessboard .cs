@@ -170,7 +170,33 @@ namespace Gobang
 
         public void Show()
         {
-            Console.Write(Str());
+            Console.Write("  A B C D E F G H I J K L M N O\n");
+            string[] mark = { ". ", "O ", "X " };
+            for (int row = 0; row < number; row++)
+            {
+                Console.Write(((char)(Convert.ToInt32('A') + row)).ToString());
+                Console.Write(" ");
+                for (int col = 0; col < number; col++)
+                {
+                    if (board[row, col] == 1)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    else if (board[row, col] == 2)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                    }
+                    Console.Write(mark[board[row, col]]);
+
+                    if(board[row, col] != 0)
+                    {
+                        Console.ResetColor();
+                    }
+                }
+                Console.Write("\n");
+            }
+            Console.Write(Dumps());
+            Console.Write("\n");
         }
     }
 }
