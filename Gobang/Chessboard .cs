@@ -10,6 +10,7 @@ namespace Gobang
     {
         public int[,] board;
         static int number = 15; //棋盘格数
+        int A_int = Convert.ToInt32('A');// 'A' => int
         int forbidden;
         int[,] dirs;
         int[,] checkDirs;
@@ -68,7 +69,41 @@ namespace Gobang
                 }
                 text += "\n";
             }
+
+            text += Dumps();
+            text += "\n";
             return text;
+        }
+
+        string Dumps()
+        {
+            string text = string.Empty;
+            for (int row = 0; row < number; row++)
+            {
+                for (int col = 0; col < number; col++)
+                {
+                    if (board[row, col] != 0)
+                    {
+                        text += string.Format("{0}:{1}{2} ", board[row, col], (char)(row + A_int), (char)(col + A_int));
+                    }
+                }
+            }
+            return text;
+        }
+
+        public void Loads(string text)
+        {
+            Reset();
+            string[] values = text.TrimEnd().Split(' ');
+            foreach(string value in values)
+            {
+                string[] info = value.Split(':');
+                char[] c = info[1].ToCharArray();
+                int row = Convert.ToInt32(c[0]) - A_int;
+                int col = Convert.ToInt32(c[0]) - A_int;
+                board[row, col] = Convert.ToInt32(info[0]);
+            }
+            Console.WriteLine(Dumps());
         }
 
         int Get(int row, int col)
