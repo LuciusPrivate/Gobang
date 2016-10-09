@@ -100,7 +100,7 @@ namespace Gobang
                 string[] info = value.Split(':');
                 char[] c = info[1].ToCharArray();
                 int row = Convert.ToInt32(c[0]) - A_int;
-                int col = Convert.ToInt32(c[0]) - A_int;
+                int col = Convert.ToInt32(c[1]) - A_int;
                 board[row, col] = Convert.ToInt32(info[0]);
             }
             Console.WriteLine(Dumps());

@@ -21,6 +21,7 @@ namespace Gobang
 
             int depth = 2; //搜索深度
 
+            //b.Loads("1:HH 2:II 1:IH 2:GI 1:HG 2:HI ");
             while (true)
             {
                 int row, col;
@@ -48,7 +49,7 @@ namespace Gobang
                     }
                     else
                     {
-                            Console.WriteLine(string.Format("Incorrect input!"));
+                        Console.WriteLine(string.Format("Incorrect input!"));
                     }
                 }
 
