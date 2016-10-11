@@ -95,7 +95,7 @@ namespace Gobang
         {
             Reset();
             string[] values = text.TrimEnd().Split(' ');
-            foreach(string value in values)
+            foreach (string value in values)
             {
                 string[] info = value.Split(':');
                 char[] c = info[1].ToCharArray();
@@ -186,9 +186,15 @@ namespace Gobang
                     {
                         Console.ForegroundColor = ConsoleColor.Magenta;
                     }
+
+                    if (won.Exists(x => x[0] == row && x[1] == col))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+
                     Console.Write(mark[board[row, col]]);
 
-                    if(board[row, col] != 0)
+                    if (board[row, col] != 0)
                     {
                         Console.ResetColor();
                     }

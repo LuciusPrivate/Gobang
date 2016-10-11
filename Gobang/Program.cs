@@ -60,6 +60,7 @@ namespace Gobang
 
                 if (b.Check() == 1) //检查是否赢
                 {
+                    b.Show();
                     Console.WriteLine(string.Format("You win!"));
                     return;
                 }
@@ -73,6 +74,7 @@ namespace Gobang
 
                 if (b.Check() == 2) //检查是否赢
                 {
+                    b.Show();
                     Console.WriteLine(string.Format("You lose!"));
                     return;
                 }
